@@ -3,15 +3,15 @@ import { Redirect } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { Form, Button, Accordion, Card, Alert, Spinner } from 'react-bootstrap'
 
-// import { setActiveUser } from '../reducers/activeUserReducer'
-
 import userService from '../services/users'
+import uploadService from '../services/upload'
 
 const UserSettingsPage = () => {
   const activeUser = useSelector(state => state.activeUser)
 
   const [isChanging, setChanging] = useState(false)
   const [changeFailed, setChangeFailed] = useState(null)
+  const [selectedFiles, setSelectedFiles] = useState([])
 
   const handlePasswordChanging = async (event) => {
     event.preventDefault()
@@ -70,6 +70,23 @@ const UserSettingsPage = () => {
     try {
       const userModInfo = { bio: newBio }
       await userService.modifyUserInfo(userModInfo, activeUser.userId, activeUser.token)
+      setChangeFailed(null)
+      setChanging(false)
+    } catch (exception) {
+      const response = exception.response
+      const errorReason = response ? response.data.error : null
+      const statusCode = response ? response.status : null
+      setChangeFailed({ error: true, statusCode, errorReason })
+      setChanging(false)
+    }
+  }
+
+  const handleAvatarChanging = async (event) => {
+    event.preventDefault()
+    setChanging(true)
+    const newAvatar = selectedFiles[0]
+    try {
+      await uploadService.postAvatar(newAvatar, activeUser.token)
       setChangeFailed(null)
       setChanging(false)
     } catch (exception) {
@@ -227,60 +244,54 @@ const UserSettingsPage = () => {
             </Card.Body>
           </Accordion.Collapse>
         </Card>
+        <Card>
+          <Card.Header>
+            <Accordion.Toggle as={Button} variant="link" eventKey="3">
+              Change avatar
+            </Accordion.Toggle>
+          </Card.Header>
+          <Accordion.Collapse eventKey="3">
+            <Card.Body>
+
+              <Form encType='multipart/form-data' onSubmit={handleAvatarChanging}>
+                <Form.Group controlId="formNewAvatar">
+                  <Form.File
+                    id="avatar"
+                    label="New avatar"
+                    onChange={e => {
+                      setSelectedFiles(e.target.files)
+                    }}
+                  />
+                </Form.Group>
+
+                <div className="d-flex justify-content-center">
+                  {!isChanging &&
+                    <Button variant="primary" type="submit">
+                      Submit
+                    </Button>
+                  }
+
+                  {isChanging &&
+                    <Button variant="primary" disabled>
+                      <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"
+                      />
+                      <span className="sr-only">Loading...</span>
+                    </Button>
+                  }
+                </div>
+              </Form>
+
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
       </Accordion>
     </>
   )
 }
-
-//   return (
-//     <Container>
-//       <Row className="justify-content-md-center">
-//         <Col></Col>
-
-//         <Col sm={9} md={6}>
-//           <Form onSubmit={handleLogin}>
-//             <Form.Group controlId="formUsername">
-//               <Form.Label>Username</Form.Label>
-//               <Form.Control type="text" placeholder="Username" />
-//             </Form.Group>
-
-//             <Form.Group controlId="formPassword">
-//               <Form.Label>Password</Form.Label>
-//               <Form.Control type="password" placeholder="Password" />
-//             </Form.Group>
-
-//             <div className="d-flex justify-content-center">
-//               {!isChanging &&
-//                 <Button variant="primary" type="submit">
-//                   Submit
-//                 </Button>
-//               }
-
-//               {isChanging &&
-//                 <Button variant="primary" disabled>
-//                   <Spinner
-//                     as="span"
-//                     animation="border"
-//                     size="sm"
-//                     role="status"
-//                     aria-hidden="true"
-//                   />
-//                   <span className="sr-only">Loading...</span>
-//                 </Button>
-//               }
-//             </div>
-//           </Form>
-//           <br />
-//           {showChangeFail &&
-//             <Alert variant="danger">
-//               Wrong username or password!
-//             </Alert>
-//           }
-//         </Col>
-
-//         <Col></Col>
-//       </Row>
-//     </Container>
-//   )
 
 export default UserSettingsPage

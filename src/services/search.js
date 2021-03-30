@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = 'http://localhost:3001/api/search'
+const baseUrl = `${process.env.REACT_APP_SERVER_URL}/api/search`
 
 const getSearchResults = async (queryString) => {
   const response = await axios.get(`${baseUrl}?q=${encodeURIComponent(queryString)}`)

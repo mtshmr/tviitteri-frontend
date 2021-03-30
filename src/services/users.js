@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = 'http://localhost:3001/api/users'
+const baseUrl = `${process.env.REACT_APP_SERVER_URL}/api/users`
 
 const getUser = async (username, offset = 0) => {
   const response = await axios.get(`${baseUrl}?username=${username}&getTviits=true&offset=${offset}`)

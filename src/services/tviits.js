@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = 'http://localhost:3001/api/tviits'
+const baseUrl = `${process.env.REACT_APP_SERVER_URL}/api/tviits`
 
 const getAll = async (offset = 0) => {
   const response = await axios.get(`${baseUrl}?offset=${offset}`)

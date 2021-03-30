@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { Spinner, Form, Button, Alert, Container, Row, Col } from 'react-bootstrap'
-import { PersonCircle } from 'react-bootstrap-icons'
 
 import userService from '../services/users'
 import tviitService from '../services/tviits'
 
 import Tviit from './Tviit'
+import Avatar from './Avatar'
 
 const Userpage = () => {
   const username = useParams().username
@@ -107,7 +107,7 @@ const Userpage = () => {
           <Col xs="auto">
             <Row>
               <Col xs="auto" className="pl-0 pr-2">
-                <PersonCircle size={72} color="#007bff" />
+                <Avatar userId={userpage.userId} size={72} />
               </Col>
               <Col xs="auto">
                 <Row><strong><h4>{userpage.name}</h4></strong></Row>

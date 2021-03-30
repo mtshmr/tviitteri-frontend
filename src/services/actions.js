@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = 'http://localhost:3001/api/actions'
+const baseUrl = `${process.env.REACT_APP_SERVER_URL}/api/actions`
 
 const getAll = async (token) => {
   const config = {

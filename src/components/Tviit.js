@@ -2,10 +2,10 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Card, Container, Col, Row } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
-import { PersonCircle } from 'react-bootstrap-icons'
 
 import DeleteTviitModalButton from './DeleteTviitModalButton'
 import LikeTviitButton from './LikeTviitButton'
+import Avatar from './Avatar'
 
 const Tviit = ({ tviit }) => {
 
@@ -20,7 +20,7 @@ const Tviit = ({ tviit }) => {
             <Container fluid>
               <Row className="d-flex align-items-center">
                 <Col xs="auto" className="pl-0 pr-2">
-                  <PersonCircle size={48} color="#007bff" />
+                  <Avatar userId={tviit.userId} size={48} />
                 </Col>
                 <Col>
                   <Row><strong>{tviit.name}</strong></Row>
@@ -34,7 +34,7 @@ const Tviit = ({ tviit }) => {
             </Container>
 
             <div className="d-flex align-items-center">
-              { tviit.username !== activeUser.username &&
+              {tviit.username !== activeUser.username &&
                 <LikeTviitButton tviitId={tviit.id} likes={tviit.likes} />
               }
               {tviit.username === activeUser.username &&
